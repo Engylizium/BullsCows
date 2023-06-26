@@ -101,14 +101,32 @@ class BullsAndCowsGame: ObservableObject {
     func getAttempts() -> Int {
         return attempts
     }
+    
+    func getLastGuess() -> String? {
+        guard let lastAttempt = previousAttempts.last else {
+            return nil
+        }
+        
+        var guessString = ""
+        for guessColor in lastAttempt {
+            guessString += guessColor.guess
+        }
+        
+        return guessString
+    }
 
     func getPreviousAttempts() -> [[GuessColor]] {
         return previousAttempts
     }
     
     func newGame() {
-        isGameOver = false
         secretNumber = generateSecretNumber(digitsCount: currentDifficulty.number)
+    }
+    
+    func cleanUp() {
+        isGameOver = false
+        previousAttempts = []
+        attempts = 0
     }
     
 }

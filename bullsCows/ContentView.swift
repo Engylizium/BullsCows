@@ -29,44 +29,57 @@ struct DifficultySelectionScreen: View {
     var body: some View {
         VStack {
             Text("Select Difficulty")
-                .font(.title)
+                .font(.largeTitle)
+                .fontWeight(.medium)
                 .padding()
-
-            Button(action: {
-                game.selectDifficulty(.easy)
-                showingGameScreen = true
-            }) {
-                Text("Easy")
-                    .font(.title2)
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-            }
             
-            Button(action: {
-                game.selectDifficulty(.medium)
-                showingGameScreen = true
-            }) {
-                Text("Medium")
-                    .font(.title2)
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
+            VStack {
+                Button(action: {
+                    game.selectDifficulty(.easy)
+                    showingGameScreen = true
+                }) {
+                    Text("Easy")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .padding()
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.green)
+                
+                Button(action: {
+                    game.selectDifficulty(.medium)
+                    showingGameScreen = true
+                }) {
+                    Text("Medium")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .padding()
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.yellow)
+                
+                Button(action: {
+                    game.selectDifficulty(.hard)
+                    showingGameScreen = true
+                }) {
+                    Text("Hard")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .padding()
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.red)
             }
-            
-            Button(action: {
-                game.selectDifficulty(.hard)
-                showingGameScreen = true
-            }) {
-                Text("Hard")
-                    .font(.title2)
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-            }
+            .padding()
         }
         .padding()
     }
@@ -79,37 +92,49 @@ struct GameScreen: View {
 
     var body: some View {
         VStack {
-            Text("Bulls and Cows")
-                .font(.title)
-                .padding()
-
             if game.gameState() {
-                            if game.getAnswer() == guess {
-                                Text("You won!")
-                                    .font(.title2)
-                                    .padding()
-                                    .foregroundColor(.green)
-                            } else {
-                                Text("Game Over")
-                                    .font(.title2)
-                                    .padding()
-                                    .foregroundColor(.red)
-                                Text("The secret number was: \(game.getAnswer())")
-                                    .font(.title3)
-                                    .padding()
-                            }
+                if game.getAnswer() == game.getLastGuess() {
+                    Text("You won!")
+                        .font(.title2)
+                        .padding()
+                        .foregroundColor(.green)
+                    Button(action: {
+                        showingGameScreen = false
+                        game.cleanUp()
+                    }) {
+                        Text("New Game")
+                            .font(.title2)
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                } else {
+                    Text("Game Over")
+                        .font(.title2)
+                        .padding()
+                        .foregroundColor(.red)
+                    Text("The secret number was: \(game.getAnswer()) and your guess was \(game.getLastGuess()!)")
+                        .font(.title3)
+                        .padding()
+                }
             } else {
                 Text("Number has \(game.getDifficulty().number) digits\nAttempts: \(game.getAttempts())")
-                    .font(.title2)
+                    .font(.title)
+                    .multilineTextAlignment(.center)
                     .padding()
-
+                
+                Spacer()
+                    .frame(height: 40.0)
+                
                 HStack {
                     Text("Guess:")
+                        .font(.headline)
                     TextField("Enter your guess", text: $guess)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                 }
                 .padding()
-
+                
                 Button(action: {
                     game.checkGuess(guess: guess)
                     guess = ""
@@ -117,26 +142,32 @@ struct GameScreen: View {
                     Text("Submit")
                         .font(.title2)
                         .padding()
-                        .background(Color.green)
+                        .background(Color.blue)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
-
+                
                 VStack {
                     Text("Previous Attempts")
                         .font(.title2)
                         .padding()
-
+                    
                     ForEach(game.getPreviousAttempts(), id: \.self) { attempt in
                         HStack {
                             ForEach(attempt, id: \.self) { guessColor in
-                                Text(guessColor.guess)
+                                Circle()
                                     .foregroundColor(guessColor.color)
-                                    .padding()
+                                    .overlay(
+                                        Text("\(guessColor.guess)")
+                                                        .foregroundColor(.white)
+                                                        .font(.system(size: 35, weight: .bold))
+                                                        .minimumScaleFactor(0.5)
+                                                )
                             }
                         }
                     }
                 }
+                .padding()
             }
         }
         .onAppear{game.newGame()}
