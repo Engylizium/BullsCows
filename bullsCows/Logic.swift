@@ -33,7 +33,7 @@ class BullsAndCowsGame: ObservableObject {
     
     @Published internal var currentDifficulty = Difficulty.easy
     private var secretNumber = ""
-    private var attempts = 0
+    private var attempts = 5
     private var isGameOver = false
     private var previousAttempts: [[GuessColor]] = []
     
@@ -71,11 +71,11 @@ class BullsAndCowsGame: ObservableObject {
          }
         
         previousAttempts.append(currentAttempt)
-        attempts += 1
+        attempts -= 1
         
         if bulls == secretNumber.count {
             isGameOver = true
-        } else if attempts > 10 {
+        } else if attempts == 0 {
             isGameOver = true
         } else {
             // Handle game ongoing
@@ -126,7 +126,7 @@ class BullsAndCowsGame: ObservableObject {
     func cleanUp() {
         isGameOver = false
         previousAttempts = []
-        attempts = 0
+        attempts = currentDifficulty.number + 1
     }
     
 }

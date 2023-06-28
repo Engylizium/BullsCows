@@ -98,6 +98,7 @@ struct GameScreen: View {
                         .font(.title2)
                         .padding()
                         .foregroundColor(.green)
+                    
                     Button(action: {
                         showingGameScreen = false
                         game.cleanUp()
@@ -117,9 +118,21 @@ struct GameScreen: View {
                     Text("The secret number was: \(game.getAnswer()) and your guess was \(game.getLastGuess()!)")
                         .font(.title3)
                         .padding()
+                    
+                    Button(action: {
+                        showingGameScreen = false
+                        game.cleanUp()
+                    }) {
+                        Text("New Game")
+                            .font(.title2)
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
                 }
             } else {
-                Text("Number has \(game.getDifficulty().number) digits\nAttempts: \(game.getAttempts())")
+                Text("Number has \(game.getDifficulty().number) digits\nAttempts left: \(game.getAttempts())")
                     .font(.title)
                     .multilineTextAlignment(.center)
                     .padding()
@@ -170,7 +183,10 @@ struct GameScreen: View {
                 .padding()
             }
         }
-        .onAppear{game.newGame()}
+        .onAppear{
+            game.cleanUp()
+            game.newGame()
+        }
         .padding()
     }
 }
