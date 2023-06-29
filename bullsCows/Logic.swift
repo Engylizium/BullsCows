@@ -33,7 +33,7 @@ class BullsAndCowsGame: ObservableObject {
     
     @Published internal var currentDifficulty = Difficulty.easy
     private var secretNumber = ""
-    private var attempts = 5
+    private var attempts = 0
     private var isGameOver = false
     private var previousAttempts: [[GuessColor]] = []
     

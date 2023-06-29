@@ -35,8 +35,7 @@ struct DifficultySelectionScreen: View {
             
             VStack {
                 Button(action: {
-                    game.selectDifficulty(.easy)
-                    showingGameScreen = true
+                    startNewGame(difficulty: "easy")
                 }) {
                     Text("Easy")
                         .font(.title)
@@ -50,8 +49,7 @@ struct DifficultySelectionScreen: View {
                 .tint(.green)
                 
                 Button(action: {
-                    game.selectDifficulty(.medium)
-                    showingGameScreen = true
+                    startNewGame(difficulty: "medium")
                 }) {
                     Text("Medium")
                         .font(.title)
@@ -65,8 +63,7 @@ struct DifficultySelectionScreen: View {
                 .tint(.yellow)
                 
                 Button(action: {
-                    game.selectDifficulty(.hard)
-                    showingGameScreen = true
+                    startNewGame(difficulty: "hard")
                 }) {
                     Text("Hard")
                         .font(.title)
@@ -83,6 +80,22 @@ struct DifficultySelectionScreen: View {
         }
         .padding()
     }
+    
+    func startNewGame(difficulty: String) {
+        switch difficulty {
+        case "easy":
+            game.selectDifficulty(.easy)
+        case "medium":
+            game.selectDifficulty(.medium)
+        case "hard":
+            game.selectDifficulty(.hard)
+        default: game.selectDifficulty(.easy)
+        }
+        showingGameScreen = true
+        game.cleanUp()
+        game.newGame()
+    }
+    
 }
 
 struct GameScreen: View {
@@ -182,10 +195,6 @@ struct GameScreen: View {
                 }
                 .padding()
             }
-        }
-        .onAppear{
-            game.cleanUp()
-            game.newGame()
         }
         .padding()
     }
